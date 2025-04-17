@@ -1,0 +1,4 @@
+latex/*
+!latex/main.tex
+!latex/references.bib
+!latex/main.pdf
