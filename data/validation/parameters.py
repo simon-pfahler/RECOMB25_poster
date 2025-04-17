@@ -1,5 +1,3 @@
-# this parameter file is included for the generation of all validation data
-
 # number of events in our test datasets
 d = 80
 
