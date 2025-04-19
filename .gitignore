@@ -2,3 +2,7 @@ latex/*
 !latex/main.tex
 !latex/references.bib
 !latex/main.pdf
+
+latex_presentation/*
+!latex_presentation/main.tex
+!latex_presentation/main.pdf

@@ -1,0 +1,572 @@
+%!TeX program = LuaLaTeX
+
+\DocumentMetadata{lang=en-US}
+\documentclass[aspectratio=169]{beamer}
+
+\beamertemplatenavigationsymbolsempty
+
+\usepackage{colorblind}
+\usepackage{amsmath}
+\usepackage{qrcode}
+\usepackage{wasysym}
+
+\usepackage{cmbright}
+\usepackage[sfdefault]{josefin}
+\usepackage{fontspec}
+
+\newfontfamily{\handwritten}{augie}
+\DeclareTextFontCommand{\texthandwritten}{\handwritten}
+
+\newfontfamily{\firatt}{FiraCodeNerdFont-Regular}
+\DeclareTextFontCommand{\texttt}{\firatt}
+
+\newfontfamily{\firabtt}{FiraCodeNerdFont-SemiBold}
+\DeclareTextFontCommand{\textbtt}{\firabtt}
+
+\usepackage{anyfontsize}
+
+\usepackage{xcolor}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{bending}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{pgfplots, pgfplotstable}
+\pgfplotsset{compat=1.18}
+
+\usepackage[sorting=none, style=nature]{biblatex}
+\addbibresource{references.bib}
+
+% >>> do not print titles
+\renewbibmacro*{title}{}
+% <<< do not print titles
+
+\usepackage{hyperref}
+
+\renewcommand\vec[1]{\mathbf{#1}}
+%\renewcommand{\labelitemii}{\scalebox{0.7}{$\circ$}}
+
+\def\w{84.1}
+\def\h{118.9}
+\newlength\wl\setlength\wl{84.1cm}
+\newlength\hl\setlength\hl{118.9cm}
+
+\def\titlesize{\fontsize{28}{33.6}\selectfont}
+\def\headingsize{\fontsize{20}{24}\selectfont}
+\def\smallheadingsize{\fontsize{18}{21.6}\selectfont}
+\def\normalsize{\fontsize{16}{19.2}\selectfont}
+\def\refsize{\fontsize{12}{14.4}\selectfont}
+\def\reffsize{\fontsize{10}{12}\selectfont}
+\def\commentsize{\fontsize{16}{17}\selectfont}
+
+\definecolor{BG}{RGB}{252,234,222}
+\definecolor{HL}{RGB}{255,138,91}
+\definecolor{Block}{RGB}{213,233,245}
+\definecolor{BlockBorder}{RGB}{24,143,167}
+
+\def\point(#1,#2){\draw[line width=0.2cm, red] (#1+0.5,#2+0.5) -- ++(-1,-1) ++(1,0) -- ++(-1,1);}
+\def\followsarrow{\tikz{
+    \draw[-{Stealth[round,scale=1.25]},line width=1mm,line cap=round] (0,0) -- (0.8,0);
+}}
+\def\straightarrow(#1,#2)[#3,rotate=#4]{%
+    \begin{scope}[shift={(#1,#2)}]
+        \fill[#3, rounded corners = 0.5cm, shift={(0.1,-0.4)}, rotate=#4] (0,0) -- ++(5,0) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) -- ++(-5,0) -- cycle;
+        \draw[line cap=round, line width=2mm, rounded corners = 0.5cm, rotate=#4] (0,0) -- ++(5,0) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) -- ++(-5,0);
+    \end{scope}}
+\def\curvedarrow(#1,#2)[#3,rotate=#4]{%
+    \begin{scope}[shift={(#1,#2)}]
+        \fill[#3, rounded corners = 0.5cm, shift={(0.1,-0.4)}, rotate=#4] (0,0) to[bend left=20] ++(5,2) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) to[bend right=20] ++(-4.3,-1.7) -- cycle;
+        \draw[line cap=round, line width=2mm, rounded corners=0.5cm, rotate=#4] (0,0) to[bend left=20] ++(5,2) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) to[bend right=20] ++(-4.3,-1.7);
+    \end{scope}}
+\def\curvedarrowinv(#1,#2)[#3,rotate=#4]{%
+    \begin{scope}[shift={(#1,#2)}]
+        \fill[#3, rounded corners = 0.5cm, shift={(0.1,-0.4)}, rotate=#4] (0,0) to[bend right=20] ++(5,-2) -- ++(0,-1) -- ++(1.5,1.5) -- ++(-1.5,1.5) -- ++(0,-1) to[bend left=20] ++(-4.3,1.7) -- cycle;
+        \draw[line cap=round, line width=2mm, rounded corners=0.5cm, rotate=#4] (0,0) to[bend right=20] ++(5,-2) -- ++(0,-1) -- ++(1.5,1.5) -- ++(-1.5,1.5) -- ++(0,-1) to[bend left=20] ++(-4.3,1.7);
+    \end{scope}}
+
+\setbeamercolor{background canvas}{bg=BG}
+
+\def\w{16.059999}
+\def\h{9.033749}
+
+\begin{document}
+\normalsize
+
+\begin{frame}
+	\makebox[\textwidth][c]{\begin{tikzpicture}[x=1cm,y=1cm, line width=1mm]
+			\useasboundingbox (-\w/2,-\h/2) rectangle (\w/2,\h/2);
+			\fill[HL] (-\w/2,-0.15*\h) ..controls ++(-5:\w/3) and ++(220:\w/3).. (\w/2,0.3*\h) -- (\w/2,\h/1.9) -- (-\w/2,\h/1.9) -- cycle;
+			\draw[HL!40!black, line width=1.5mm] (-\w/2,-0.15*\h) ..controls ++(-5:\w/3) and ++(220:\w/3).. (\w/2,0.3*\h);
+			\node[anchor=north west] at (-\w/2+0.5,\h/2-0.5) {\parbox[t]{\pagewidth}{\titlesize Exploiting weak modularity in\\cancer progression to infer\\large Mutual Hazard\\Networks}};
+			\node[anchor=north west] at (-\w/2+0.3,-0.18*\h) {%
+				\parbox[t]{\pagewidth}{\refsize Simon Pfahler\textsuperscript{1}, Leon Ernstberger\textsuperscript{1}, Peter Georg\textsuperscript{1}, Andreas Lösch\textsuperscript{1},\\Rudolf Schill\textsuperscript{2}, Lars Grasedyck\textsuperscript{3}, Rainer Spang\textsuperscript{1}, Tilo Wettig\textsuperscript{1}\\[0.5ex]
+					\reffsize\textsuperscript{1} University of Regensburg, \textsuperscript{2} ETH Zürich, \textsuperscript{3} RWTH Aachen
+				}};
+			\node[anchor=south east] at (\w/2-0.1,-\h/2+0.1) (SdV) {\includegraphics[height=1cm]{../latex/graphics/logo_sdv.pdf}};
+			\node[anchor=south east] at ($(SdV.south west)+(-0.1,0)$) {\includegraphics[height=1cm]{../latex/graphics/ur-logo-bildmarke-grau.eps}};
+		\end{tikzpicture}}
+\end{frame}
+
+\begin{frame}
+	\makebox[\textwidth][c]{\begin{tikzpicture}[x=1cm,y=1cm, line width=1mm,
+			commentarrow/.style={
+			line width=0.07cm,
+			-{Stealth[round, scale=1.1]},
+			line cap=round
+			},
+			]
+			\useasboundingbox (-\w/2,-\h/2) rectangle (\w/2,\h/2);
+			\fill[Block] (-\w/2,0.25*\h) ..controls ++(-10:0.2*\w) and ++(280:0.15*\w).. (-0.13*\w,0.51*\h) -- (-\w/2,0.51*\h) -- cycle;
+			\draw[BlockBorder] (-\w/2,0.25*\h) ..controls ++(-10:0.2*\w) and ++(280:0.15*\w).. (-0.13*\w,0.51*\h);
+			\draw[HL!50, line width=0.5cm] (0.01*\w,0.52*\h) ..controls ++(250:0.3*\h) and ++(75:0.3*\h).. (0,-0.52*\h);
+
+			\node[anchor=north west] at (-\w/2+0.2,\h/2-0.2) {\parbox[t]{\pagewidth}{\headingsize Mutual Hazard\\Networks}};
+
+			% >>> MHN graph example
+			\begin{scope}[shift={(-4,-1.5)}, scale=0.5]
+				\node[circle, draw=violet, fill=violet!20] at (80:4.5) (A) {\headingsize A};
+				\node[circle,draw=yellow, fill=yellow!20] at (210:4.5) (B) {\headingsize B};
+				\node[circle,draw=green, fill=green!20] at (340:4.5) (C) {\headingsize C};
+				\draw[blue, line width=1mm, ->, shorten <=0.2cm, shorten >=0.2cm, line cap=round] (A) to[bend right=25] node[above, sloped, black!50] {\commentsize\texthandwritten{promoting}} (B);
+				\draw[red, line width=1.5mm, -|, shorten <=0.2cm, shorten >=0.2cm, line cap=round] (B) to[bend right=25] node[below, sloped, black!50] {\commentsize\texthandwritten{inhibiting}} (C);
+				\draw[blue, line width=2mm, ->, shorten <=0.2cm, shorten >=0.2cm, line cap=round] (C) to[bend right=25] (A);%node[above, sloped, black!50] {\commentsize\texthandwritten{stochastic}} (A);
+				\draw[black!50, commentarrow, shorten <=0.1cm, shorten >=0.1cm] (-0.3,1.5) arc (110:435:1cm);
+				\node[black!50] at (0,-1) {\commentsize\texthandwritten{circular}};
+			\end{scope}
+			% <<< MHN graph example
+
+			% >>> Markov chain visualization
+			\begin{scope}[line cap=rect,shift={(3.2,3)}, scale=0.5, line width=0.5mm]
+				% names
+				\node[violet, anchor=south, inner sep=5pt] at (0.5,0) {\normalsize A};
+				\node[yellow, anchor=south, inner sep=5pt] at (1.5,0) {\normalsize B};
+				\node[green, anchor=south, inner sep=5pt] at (2.5,0) {\normalsize C};
+
+				% first line
+				\fill[white] (0,0) rectangle ++(1,-1);
+				\fill[white] (1,0) rectangle ++(1,-1);
+				\fill[white] (2,0) rectangle ++(1,-1);
+				\draw (0,0) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+				% connections
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (1.5,-0.5) -- (-2,-3);
+				\draw[line cap=round,black!50,shorten >=0.375cm, shorten <=0.425cm,->] (1.5,-0.5) -- (1.5,-3);
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (1.5,-0.5) -- (5,-3);
+
+				% second line
+				\fill[violet] (-3.5,-2.5) rectangle ++(1,-1);
+				\fill[white] (-2.5,-2.5) rectangle ++(1,-1);
+				\fill[white] (-1.5,-2.5) rectangle ++(1,-1);
+				\fill[white] (0,-2.5) rectangle ++(1,-1);
+				\fill[yellow] (1,-2.5) rectangle ++(1,-1);
+				\fill[white] (2,-2.5) rectangle ++(1,-1);
+				\fill[white] (3.5,-2.5) rectangle ++(1,-1);
+				\fill[white] (4.5,-2.5) rectangle ++(1,-1);
+				\fill[green] (5.5,-2.5) rectangle ++(1,-1);
+				\draw (0,-2.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+				\draw (-3.5,-2.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+				\draw (3.5,-2.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+				% connections
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (1.5,-3) -- (-2,-5.5);
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (1.5,-3) -- (5,-5.5);
+				\draw[line cap=round,black!50,shorten >=0.375cm, shorten <=0.425cm,->] (5,-3) -- (5,-5.5);
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (5,-3) -- (1.5,-5.5);
+				\draw[line cap=round,black!50,shorten >=0.375cm, shorten <=0.425cm,->] (-2,-3) -- (-2,-5.5);
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (-2,-3) -- (1.5,-5.5);
+
+				% third line
+				\fill[violet] (-3.5,-5) rectangle ++(1,-1);
+				\fill[yellow] (-2.5,-5) rectangle ++(1,-1);
+				\fill[white] (-1.5,-5) rectangle ++(1,-1);
+				\fill[violet] (0,-5) rectangle ++(1,-1);
+				\fill[white] (1,-5) rectangle ++(1,-1);
+				\fill[green] (2,-5) rectangle ++(1,-1);
+				\fill[white] (3.5,-5) rectangle ++(1,-1);
+				\fill[yellow] (4.5,-5) rectangle ++(1,-1);
+				\fill[green] (5.5,-5) rectangle ++(1,-1);
+				\draw (0,-5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+				\draw (-3.5,-5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+				\draw (3.5,-5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+				% connections
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (5,-5.5) -- (1.5,-8);
+				\draw[line cap=round,black!50,shorten >=0.375cm, shorten <=0.425cm,->] (1.5,-5.5) -- (1.5,-8);
+				\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.75cm,->] (-2,-5.5) -- (1.5,-8);
+
+				% fourth line
+				\fill[violet] (0,-7.5) rectangle ++(1,-1);
+				\fill[yellow] (1,-7.5) rectangle ++(1,-1);
+				\fill[green] (2,-7.5) rectangle ++(1,-1);
+				\draw (0,-7.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+				% annotations
+				\node[black!50] at (-2.8,-0.8) (absent) {\commentsize\texthandwritten{absent}};
+				\draw[black!50,commentarrow] (-0.6,-0.8) to[bend left=30] (0.5,-0.5);
+				\node[black!50] at (5.8,-0.5) {\commentsize\texthandwritten{present}};
+				\draw[black!50,commentarrow] (5.4,-1.2) to[bend left=30] (6,-3);
+
+				\node at (1.5,-12.2) {\parbox[t]{4cm}{\centering Transition rates:\vspace{-0.3cm}
+						\begin{align*}
+							\vec Q_{x^{+i},x}=\Theta_{ii}\prod_{x_j=1}^d\Theta_{ij}
+						\end{align*}
+					}};
+			\end{scope}
+			% <<< Markov chain visualization
+			\node[anchor=south east] at (\w/2,-\h/2) {\includegraphics[height=1cm]{../latex/graphics/ur-logo-bildmarke-grau.eps}};
+		\end{tikzpicture}}
+\end{frame}
+
+\begin{frame}
+	\makebox[\textwidth][c]{\begin{tikzpicture}[x=1cm,y=1cm, line width=1mm]
+			\useasboundingbox (-\w/2,-\h/2) rectangle (\w/2,\h/2);
+			\fill[Block] (-\w/2,0.35*\h) ..controls ++(-10:0.3*\w) and ++(280:0.1*\w).. (-0.25*\w,0.51*\h) -- (-\w/2,0.51*\h) -- cycle;
+			\draw[BlockBorder] (-\w/2,0.35*\h) ..controls ++(-10:0.3*\w) and ++(280:0.1*\w).. (-0.25*\w,0.51*\h);
+
+			\node[anchor=north west] at (-\w/2+0.2,\h/2-0.2) {\parbox[t]{\pagewidth}{\headingsize Clustering}};
+			%Clustering
+			\begin{scope}[shift={(-0.5,0)}, scale=0.5, line width=0.5mm]
+				\begin{scope}[shift={(-11,1)}]
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+					\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+				\end{scope}
+				\node at (-9.2,-3.2) {\scalebox{0.175}{\tikz{\curvedarrowinv(0,0)[violet!50,rotate=-15]}}};
+				\begin{scope}[shift={(-4.5,-3.5)}]
+					\filldraw[draw=yellow,fill=yellow!50, line width=0.35mm]
+					(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+					(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+					(0,1.8) ..controls ++(0:-2) and ++(75:1.5)..
+					cycle;
+
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+					\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+				\end{scope}
+				\node at (-3.6,2.1) {\scalebox{0.175}{\tikz{\curvedarrow(0,0)[violet!50,rotate=35]}}};
+				\begin{scope}[shift={(1,4)}]
+					\filldraw[draw=yellow,fill=yellow!50, line width=0.35mm]
+					(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+					(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+					(0,1.8) ..controls ++(0:-2) and ++(75:1.5)..
+					cycle;
+					\filldraw[draw=cyan,fill=cyan!50, line width=0.35mm]
+					(-3.4,-1) ..controls ++(85:-1.8) and ++(92:-1.5)..
+					(3.2,-1.2) ..controls ++(92:1.5) and ++(0:1.5)..
+					(0,-0.48) ..controls ++(0:-1.5) and ++(85:1.9)..
+					cycle;
+
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+					\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+				\end{scope}
+				\node at (1.9,-1.3) {\scalebox{0.175}{\tikz{\curvedarrowinv(0,0)[violet!50,rotate=-25]}}};
+				\node[black!50, rotate=-8] at (8.8,-19.5) {\commentsize\texthandwritten{3. step}};
+				\begin{scope}[shift={(7,-3)}]
+					\filldraw[draw=yellow,fill=yellow!50, line width=0.35mm]
+					(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+					(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+					(0,1.8) ..controls ++(0:-2) and ++(75:1.5)..
+					cycle;
+					\filldraw[draw=cyan,fill=cyan!50, line width=0.35mm]
+					(-3.4,-1) ..controls ++(85:-1.8) and ++(355:-1)..
+					(-0.5,-4.2) ..controls ++(355:1.4) and ++(92:-1.5)..
+					(3.2,-1.2) ..controls ++(92:1.5) and ++(0:1.5)..
+					(0,-0.48) ..controls ++(0:-1.5) and ++(85:1.9)..
+					cycle;
+
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+					\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+				\end{scope}
+				\node at (8.2,2.2) {\scalebox{0.175}{\tikz{\curvedarrow(0,0)[violet!50,rotate=20]}}};
+				\begin{scope}[shift={(13,3)}]
+					\filldraw[draw=yellow,fill=yellow!50, line width=0.35mm]
+					(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+					(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+					(0,4.3) ..controls ++(0:-2) and ++(75:1.5)..
+					cycle;
+					\filldraw[draw=cyan,fill=cyan!50, line width=0.35mm]
+					(-3.4,-1) ..controls ++(85:-1.8) and ++(355:-1)..
+					(-0.5,-4.2) ..controls ++(355:1.4) and ++(92:-1.5)..
+					(3.2,-1.2) ..controls ++(92:1.5) and ++(0:1.5)..
+					(0,-0.48) ..controls ++(0:-1.5) and ++(85:1.9)..
+					cycle;
+
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+					\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+					\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+					\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+					\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+					\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+					\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+					\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+					\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+				\end{scope}
+			\end{scope}
+			% <<< Clustering example
+
+			\node[anchor=south east] at (\w/2,-\h/2) {\includegraphics[height=1cm]{../latex/graphics/ur-logo-bildmarke-grau.eps}};
+		\end{tikzpicture}}
+\end{frame}
+
+\begin{frame}
+	\makebox[\textwidth][c]{\begin{tikzpicture}[x=1cm,y=1cm, line width=1mm,
+			commentarrow/.style={
+			line width=0.07cm,
+			-{Stealth[round, scale=1.1]},
+			line cap=round
+			},
+			]
+			\useasboundingbox (-\w/2,-\h/2) rectangle (\w/2,\h/2);
+			\fill[Block] (-\w/2,0.35*\h) ..controls ++(-8:0.3*\w) and ++(280:0.1*\w).. (-0.08*\w,0.51*\h) -- (-\w/2,0.51*\h) -- cycle;
+			\draw[BlockBorder] (-\w/2,0.35*\h) ..controls ++(-8:0.3*\w) and ++(280:0.1*\w).. (-0.08*\w,0.51*\h);
+
+			\node[anchor=north west] at (-\w/2+0.2,\h/2-0.2) {\parbox[t]{\pagewidth}{\headingsize Learning process}};
+
+			\node at (3.7,3.7) {\texthandwritten{step $\Theta_{ij}^{(n)}\rightarrow\Theta_{ij}^{(n+1)}$}};
+			\node[anchor=north west] at (-7.5,2.5) {\parbox[t]{10cm}{for $\Theta_{ij}$, do:
+					\begin{itemize}
+						\item[\textbullet] get a cluster containing\\events $i$ and $j$
+						\item[\textbullet] perform one step of training\\for the MHN defined only\\on this cluster
+						\item[\textbullet] set $\Theta_{ij}^{(n+1)}$ from\\this smaller MHN
+					\end{itemize}
+				}};
+			\node[gray!50!black] at (3,1.5) {\refsize\texthandwritten{\parbox[t]{6cm}{Clusters for\\different $i$ and $j$\\can overlap!}}};
+			\draw[gray!50!black, commentarrow] (-0.1,0.7) to[bend left=10] (-2.5,0.5);
+			\begin{scope}[shift={(2.8,-2.1)}, scale=0.5]
+				\filldraw[draw=yellow,fill=yellow!50, line width=0.35mm]
+				(3.1,1.9) ..controls ++(135:-1.2) and ++(50:1)..
+				(3,-1.7) ..controls ++(50:-1) and ++(135:-1)..
+				(-2.7,-1.8) ..controls ++(135:1) and ++(10:-1)..
+				(-3,-0.2) ..controls ++(10:2) and ++(135:1.5)..
+				cycle;
+
+				\node[circle, draw=HL!40!black, fill=HL, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+				\node[circle, draw=HL!40!black, fill=HL, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+				\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+				\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+				\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+				\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+				\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+				\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+				\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+				\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+				\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+				\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+				\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+				\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+				\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+				\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+				\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+				\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+			\end{scope}
+			\begin{scope}[shift={(5.9,0.8)}, scale=0.5]
+				\filldraw[draw=yellow,fill=yellow!50, line width=0.35mm]
+				(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+				(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+				(0,4.3) ..controls ++(0:-2) and ++(75:1.5)..
+				cycle;
+
+				\node[circle, draw=HL!40!black, fill=HL, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+				\node[circle, draw=HL!40!black, fill=HL, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+				\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+				\draw[red, -|, bend right=15, line width=1.5*1.2pt] (A) to (B);
+				\draw[red, -|, bend right=15, line width=1.5*1.2pt] (B) to (A);
+				\draw[blue,->, bend right=15, line width=1.5*1.39pt] (C) to (A);
+				\draw[blue,->, bend right=15, line width=1.5*1.61pt] (A) to (C);
+				\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (B);
+				\draw[blue,->, bend right=15, line width=1.5*0.69pt] (B) to (C);
+				\draw[blue,->, bend right=15, line width=1.5*0.41pt] (F) to (A);
+				\draw[blue,->, bend right=15, line width=1.5*1.1pt] (A) to (F);
+				\draw[red, -|, bend right=15, line width=1.5*0.92pt] (E) to (C);
+				\draw[red, -|, bend right=15, line width=1.5*0.69pt] (C) to (E);
+				\draw[blue,->, bend right=15, line width=1.5*1.39pt] (E) to (D);
+				\draw[blue,->, bend right=15, line width=1.5*1.1pt] (D) to (E);
+				\draw[red, -|, bend right=15, line width=1.5*1.61pt] (F) to (D);
+				\draw[blue,->, bend right=15, line width=1.5*0.69pt] (D) to (F);
+				\draw[red, -|, bend right=15, line width=1.5*2.3pt] (F) to (E);
+				\draw[red, -|, bend right=15, line width=1.5*1.61pt] (E) to (F);
+			\end{scope}
+			\node[anchor=south east] at (\w/2,-\h/2) {\includegraphics[height=1cm]{../latex/graphics/ur-logo-bildmarke-grau.eps}};
+		\end{tikzpicture}}
+\end{frame}
+
+\begin{frame}
+	\makebox[\textwidth][c]{\begin{tikzpicture}[x=1cm,y=1cm, line width=1mm]
+			\useasboundingbox (-\w/2,-\h/2) rectangle (\w/2,\h/2);
+			\fill[Block] (-\w/2,0.36*\h) ..controls ++(5:0.3*\w) and ++(280:0.18*\w).. (-0.12*\w,0.55*\h) -- (-\w/2,0.51*\h) -- cycle;
+			\draw[BlockBorder] (-\w/2,0.36*\h) ..controls ++(5:0.3*\w) and ++(280:0.18*\w).. (-0.12*\w,0.55*\h);
+
+			\filldraw[draw=HL!40!black, fill=HL] (0.6*\w,1.5) ..controls ++(150:2) and ++(70:2).. (0.28*\w, 1.5) ..controls ++(70:-1) and ++(135:1).. (0.32*\w, -0.9) ..controls ++(135:-1) and ++(220:2).. (0.6*\w,0);
+			\node[anchor=east] at (\w/2,1.75) (Text) {\texthandwritten{\fontsize{14}{12}\selectfont Interested?}};
+			\node[anchor=north, shift={(0,0.2)}, fill=BG, inner sep=0.1cm, rounded corners=0.1cm] at (Text.south) {\qrcode[height=2cm]{https://simon-pfahler.github.io/permanent/RECOMB25/RECOMB25.html}};
+
+			\node[anchor=north west] at (-\w/2+0.1,\h/2-0.1) {\parbox[t]{\pagewidth}{\headingsize Biological results}};
+			\node[anchor=north east] at (\w/2-0.1,\h/2-0.05) {\parbox[t]{9cm}{\raggedleft\reffsize
+					MSK-CHORD data of 5907 LUADs\\trained on 125 genetic events\\
+					strongest 30 connections shown}};
+
+			\begin{scope}[shift={(0,-2.2)}, scale=0.5,line cap=round,font=\reffsize,
+					event/.style={fill=green!20, draw=green, rectangle, inner sep=0.4em, rectangle, line width=0.5mm, rounded corners=1mm},
+					promoting/.style={blue,->, text=blue!50!black, rounded corners=0.5mm},
+					inhibiting/.style={red,-|,text=red!50!black, rounded corners=0.5mm},
+					effect/.style={inner sep=0.2ex}
+				]
+				\def\s{0.75}
+
+				\node[event] at (0,0) (EGFR) {EGFR};
+				\node[event] at (-4.7,3) (MYC/8q) {\parbox[t]{1.325cm}{\centering MYC/8q\\Amp}};
+				\node[event] at (0,2.7) (TP53/17p) {\parbox[t]{1.415cm}{\centering TP53/17p\\Del}};
+				\node[event] at (0,5.5) (EPHA7/6q) {\parbox[t]{1.675cm}{\centering EPHA7/6q\\Del}};
+				\node[event] at (0,-3) (NKX2-1/14q) {\parbox[t]{1.85cm}{\centering NKX2-1/14q\\Amp}};
+				\node[event] at (-6,-0.25) (GNAS/20q) {\parbox[t]{1.775cm}{\centering GNAS/20q\\Amp}};
+				\node[event] at (-11,-0.25) (CCND1/11q) {\parbox[t]{1.75cm}{\centering CCND1/11q\\Amp}};
+				\node[event] at (0, 9) (CDKN2A/9p) {\parbox[t]{2.025cm}{\centering CDKN2A/9p\\Del}};
+				\node[event] at (-6, 9) (BCL2/18q) {\parbox[t]{1.85cm}{\centering BCL2/18q\\Del}};
+				\node[event] at (6,9) (B2M/15q) {\parbox[t]{1.4cm}{\centering B2M/15q\\Del}};
+				\node[event] at (6,5.5) (TERT/5p) {\parbox[t]{1.4cm}{\centering TERT/5p\\Amp}};
+				\node[event] at (-11.5,3) (RMI2/16p) {\parbox[t]{1.5cm}{\centering RMI2/16p\\Amp}};
+				\node[event] at (-13,9.3) (ARID5B/10q) {\parbox[t]{1.925cm}{\centering ARID5B/10q\\Del}};
+				\node[event] at (-13,6.3) (CXCR4/2q) {\parbox[t]{1.675cm}{\centering CXCR4/2q\\Del}};
+				\node[event] at (8,2.5) (KRAS) {KRAS};
+				\node[event] at (8,0) (EGFR/17p) {\parbox[t]{1.575cm}{\centering EGFR/17p\\Amp}};
+				\node[event] at (4.5,-3) (KEAP1) {KEAP1};
+				\node[event] at (9,-3) (STK11/19p) {\parbox[t]{1.53cm}{\centering STK11/19p\\Del}};
+				\node[event] at (13.5,-3) (STK11) {STK11};
+
+				\draw[inhibiting, line width=2.62785962052687*\s] ($(EGFR.south)+(0,-0.1)$) -- ($(NKX2-1/14q.north)+(0,0.1)$);
+				\draw[inhibiting, line width=2.090191137159693*\s] ($(TP53/17p.west)+(-0.1,0.15)$) -- ($(MYC/8q.east)+(0.1,-0.15)$);
+				\draw[promoting, line width=2.6329435007018858*\s] ($(EGFR.west)+(-0.1,0.4)$) -| ($(MYC/8q.south east)+(-0.2,-0.1)$);
+				\draw[promoting, line width=2.5837968354725245*\s] ($(MYC/8q.south)+(-0.7,-0.1)$) -- ($(GNAS/20q.north)+(0.6,0.1)$);
+				\draw[inhibiting, line width=2.7770633563697484*\s] ($(EGFR.west)+(-0.1,0)$) -- ($(GNAS/20q.east)+(0.1,0.25)$);
+				\draw[inhibiting, line width=3.4485835476815803*\s] ($(EPHA7/6q.north)+(-0.2,0.1)$) -- ($(CDKN2A/9p.south)+(-0.2,-0.1)$);
+				\draw[promoting, line width=2.346640143756334*\s] ($(CDKN2A/9p.south)+(0.2,-0.1)$) -- ($(EPHA7/6q.north)+(0.2,0.1)$);
+				\draw[inhibiting, line width=2.8634787659839303*\s] ($(EPHA7/6q.west)+(-0.1,0)$) -| ($(MYC/8q.north east)+(-0.2,0.1)$);
+				\draw[promoting, line width=2.436940964753187*\s] ($(CDKN2A/9p.west)+(-0.1,0.2)$) -- ($(BCL2/18q.east)+(0.1,0.2)$);
+				\draw[inhibiting, line width=2.384520201540039*\s] ($(BCL2/18q.east)+(0.1,-0.2)$) -- ($(CDKN2A/9p.west)+(-0.1,-0.2)$);
+				\draw[promoting, line width=2.227204778748276*\s] ($(CDKN2A/9p.east)+(0.1,-0.2)$) -- ($(B2M/15q.west)+(-0.1,-0.2)$);
+				\draw[inhibiting, line width=2.1935608542062455*\s] ($(B2M/15q.west)+(-0.1,0.2)$) -- ($(CDKN2A/9p.east)+(0.1,0.2)$);
+				\draw[inhibiting, line width=2.83413942169526*\s] ($(BCL2/18q.south)+(0.7,-0.1)$) -- ($(MYC/8q.north)+(-0.6,0.1)$);
+				\draw[inhibiting, line width=2.140461516655592*\s] ($(B2M/15q.south)+(0,-0.1)$) -- ($(TERT/5p.north)+(0,0.1)$);
+				\draw[inhibiting, line width=2.545765941307774*\s] ($(BCL2/18q.south east)+(-0.2,-0.1)$) |- (-0.4,7.25) (0.4,7.25) -| ($(TERT/5p.north west)+(0.2,0.1)$);
+				\draw[promoting, line width=2.177737488174746*\s] ($(EGFR.north east)+(-0.2,0.1)$) -- ++(0,0.3) -| ($(TERT/5p.south west)+(0.6,-0.1)$);
+				\draw[inhibiting, line width=2.818964791738894*\s] ($(TP53/17p.east)+(0.1,0)$) -| ($(TERT/5p.south west)+(0.2,-0.1)$);
+				\draw[inhibiting, line width=2.394091944573555*\s] ($(EPHA7/6q.east)+(0.1,0)$) -- ($(TERT/5p.west)+(-0.1,0)$);
+				\draw[promoting, line width=2.3620930223508565*\s] ($(TERT/5p.south west)+(0.95,-0.1)$) -- ++(0,-3.35) ++(0,-1) |- (3,-1.2) -| ($(NKX2-1/14q.north east)+(-0.2,0.1)$);
+				\draw[promoting, line width=2.3735738537723017*\s] ($(ARID5B/10q.south)+(0,-0.1)$) -- ($(CXCR4/2q.north)+(0,0.1)$);
+				\draw[promoting, line width=2.1938684346702697*\s] ($(MYC/8q.west)+(-0.1,0)$) -- ($(RMI2/16p.east)+(0.1,0)$);
+				\draw[promoting, line width=2.4937024529361387*\s] ($(MYC/8q.south west)+(-0.1,0.2)$) -| ($(CCND1/11q.north east)+(-0.2,0.1)$);
+				\draw[inhibiting, line width=2.1889670936302164*\s] ($(EGFR.west)+(-0.1,-0.4)$) -| ($(GNAS/20q.south east)+(0.5,-0.8)$) -| ($(CCND1/11q.south east)+(-0.2,-0.1)$);
+				\draw[promoting, line width=2.316964127961973*\s] ($(EGFR.east)+(0.1,0)$) -- ($(EGFR/17p.west)+(-0.1,0)$);
+				\draw[inhibiting, line width=3.038326507008012*\s] ($(KRAS.west)+(-0.1,0.2)$) -| ($(EGFR/17p.north west)+(-0.6,0)$) |- ($(EGFR.north east)+(0.1,-0.2)$);
+				\draw[inhibiting, line width=2.0847404963047738*\s] ($(EGFR.north east)+(0.1,-0.5)$) -| ($(EGFR/17p.north west)+(-0.3,0)$) |- ($(KRAS.west)+(-0.1,-0.2)$);
+				\draw[inhibiting, line width=2.092679620228705*\s] ($(EGFR.south east)+(0.1,0.2)$) -| (4.5,-1) ++ (0,-0.4) -- ($(KEAP1.north)+(0,0.1)$);
+				\draw[promoting, line width=2.5137728556255863*\s] ($(STK11/19p.west)+(-0.1,0)$) -- ($(KEAP1.east)+(0.1,0)$);
+				\draw[promoting, line width=2.276630886867481*\s] ($(STK11/19p.east)+(0.1,0)$) -- ($(STK11.west)+(-0.1,0)$);
+				\draw[promoting, line width=2.4411675614605217*\s] ($(MYC/8q.south east)+(0.1,0.2)$) -| ($(NKX2-1/14q.north west)+(0.2,2.4)$) ++(0,-1.4) -- ($(NKX2-1/14q.north west)+(0.2,0.1)$);
+				\draw[inhibiting, line width=2.7100698079181345*\s] ($(TP53/17p.north east)+(0.1,-0.2)$) -| ($(CDKN2A/9p.south east)+(-0.2,-2.6)$) ++(0,0.6) -- ++(0,1.2) ++(0,0.5) -- ($(CDKN2A/9p.south east)+(-0.2,-0.1)$);
+			\end{scope}
+		\end{tikzpicture}}
+\end{frame}
+
+\end{document}
