@@ -1,0 +1,799 @@
+%!TeX program = LuaLaTeX
+
+\DocumentMetadata{lang=en-US}
+\documentclass[tikz]{standalone}
+
+\usepackage{colorblind}
+\usepackage{amsmath}
+\usepackage{qrcode}
+\usepackage{wasysym}
+
+\usepackage{cmbright}
+\usepackage[sfdefault]{josefin}
+\usepackage{fontspec}
+
+\newfontfamily{\handwritten}{augie}
+\DeclareTextFontCommand{\texthandwritten}{\handwritten}
+
+\newfontfamily{\firatt}{FiraCodeNerdFont-Regular}
+\DeclareTextFontCommand{\texttt}{\firatt}
+
+\newfontfamily{\firabtt}{FiraCodeNerdFont-SemiBold}
+\DeclareTextFontCommand{\textbtt}{\firabtt}
+
+\usepackage{anyfontsize}
+
+\usepackage{xcolor}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{bending}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{pgfplots, pgfplotstable}
+\pgfplotsset{compat=1.18}
+
+\usepackage[sorting=none, style=nature]{biblatex}
+\addbibresource{references.bib}
+
+% >>> do not print titles
+\renewbibmacro*{title}{}
+% <<< do not print titles
+
+\usepackage{hyperref}
+
+\renewcommand\vec[1]{\mathbf{#1}}
+\renewcommand{\labelitemii}{\scalebox{0.7}{$\circ$}}
+
+\def\w{84.1}
+\def\h{118.9}
+\newlength\wl\setlength\wl{84.1cm}
+\newlength\hl\setlength\hl{118.9cm}
+
+\def\titlesize{\fontsize{100}{150}\selectfont}
+\def\headingsize{\fontsize{60}{90}\selectfont}
+\def\smallheadingsize{\fontsize{50}{75}\selectfont}
+\def\normalsize{\fontsize{36}{45}\selectfont}
+\def\refsize{\fontsize{30}{45}\selectfont}
+\def\reffsize{\fontsize{30}{35}\selectfont}
+\def\commentsize{\fontsize{20}{22}\selectfont}
+
+\definecolor{BG}{RGB}{252,234,222}
+\definecolor{HL}{RGB}{255,138,91}
+\definecolor{Block}{RGB}{213,233,245}
+\definecolor{BlockBorder}{RGB}{24,143,167}
+
+\def\point(#1,#2){\draw[line width=0.2cm, red] (#1+0.5,#2+0.5) -- ++(-1,-1) ++(1,0) -- ++(-1,1);}
+\def\followsarrow{\tikz{
+    \draw[-{Stealth[round,scale=1.25]},line width=1mm,line cap=round] (0,0) -- (0.8,0);
+}}
+\def\straightarrow(#1,#2)[#3,rotate=#4]{%
+    \begin{scope}[shift={(#1,#2)}]
+        \fill[#3, rounded corners = 0.5cm, shift={(0.1,-0.4)}, rotate=#4] (0,0) -- ++(5,0) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) -- ++(-5,0) -- cycle;
+        \draw[line cap=round, line width=2mm, rounded corners = 0.5cm, rotate=#4] (0,0) -- ++(5,0) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) -- ++(-5,0);
+    \end{scope}}
+\def\curvedarrow(#1,#2)[#3,rotate=#4]{%
+    \begin{scope}[shift={(#1,#2)}]
+        \fill[#3, rounded corners = 0.5cm, shift={(0.1,-0.4)}, rotate=#4] (0,0) to[bend left=20] ++(5,2) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) to[bend right=20] ++(-4.3,-1.7) -- cycle;
+        \draw[line cap=round, line width=2mm, rounded corners=0.5cm, rotate=#4] (0,0) to[bend left=20] ++(5,2) -- ++(0,1) -- ++(1.5,-1.5) -- ++(-1.5,-1.5) -- ++(0,1) to[bend right=20] ++(-4.3,-1.7);
+    \end{scope}}
+\def\curvedarrowinv(#1,#2)[#3,rotate=#4]{%
+    \begin{scope}[shift={(#1,#2)}]
+        \fill[#3, rounded corners = 0.5cm, shift={(0.1,-0.4)}, rotate=#4] (0,0) to[bend right=20] ++(5,-2) -- ++(0,-1) -- ++(1.5,1.5) -- ++(-1.5,1.5) -- ++(0,-1) to[bend left=20] ++(-4.3,1.7) -- cycle;
+        \draw[line cap=round, line width=2mm, rounded corners=0.5cm, rotate=#4] (0,0) to[bend right=20] ++(5,-2) -- ++(0,-1) -- ++(1.5,1.5) -- ++(-1.5,1.5) -- ++(0,-1) to[bend left=20] ++(-4.3,1.7);
+    \end{scope}}
+
+\begin{document}
+\normalsize
+\begin{tikzpicture}[
+	x=1cm,y=1cm,
+	line width=1mm,
+	background rectangle/.style={fill=BG},
+	show background rectangle,
+	commentarrow/.style={
+	line width=0.07cm,
+	-{Stealth[round, scale=1.1]},
+	line cap=round
+	},
+	blockcolors/.style={
+			fill=Block,
+			draw=BlockBorder,
+		},
+	]
+	\useasboundingbox (-\w/2,-\h/2) rectangle (\w/2,\h/2);
+
+	% >>> different background for biological results
+	\fill[BG!50, line width=1cm] (5,-7) ..controls ++(350:10) and ++(80:15)..
+	(25,-20) ..controls ++(80:-5) and ++(130:10)..
+	(30,-40) --
+	(15,-45) ..controls ++(180:10) and ++(150:-10)..
+	(-5,-30) ..controls ++(150:10) and ++(90:-20)..
+	(-20,-10) ..controls ++(90:10) and ++(20:-10)..
+	(-5,0) --
+	cycle;
+	% <<< different background for biological results
+
+	% >>> roter Faden
+	\draw[HL!60, line width=2.5cm] (-12,24) ..controls ++(5:10) and ++(90:8)..
+	(13,15) ..controls ++(90:-5) and ++(20:10)..
+	(-5,0) ..controls ++(20:-10) and ++(90:10)..
+	(-20,-10) ..controls ++(90:-20) and ++(150:10)..
+	(-5,-30) ..controls ++(150:-10) and ++(180:10)..
+	(15,-45);
+	% <<< roter Faden
+
+	% >>> Titelblock
+	\fill[HL] (-\w/2,0.295*\h) .. controls ++(0.7*\w,0) and ++(-0.3*\w,0.05*\h).. (\w/2,0.33*\h) -- (\w/2,\h/2) -- (-\w/2,\h/2) -- cycle;
+	\draw[HL!40!black,line width=0.5cm] (-\w/2,0.295*\h) .. controls ++(0.7*\w,0) and ++(-0.3*\w,0.05*\h).. (\w/2,0.33*\h);
+	\node[anchor=north west] at (-0.48*\w,0.485*\h)
+	{
+		\parbox[t]{0.95\wl}{
+			\titlesize Exploiting weak modularity in cancer progression to infer large Mutual Hazard Networks\\[0.5ex]
+			\normalsize\hphantom{m}Simon Pfahler\textsuperscript{1}, Leon Ernstberger\textsuperscript{1}, Peter Georg\textsuperscript{1}, Andreas Lösch\textsuperscript{2}, Rudolf Schill\textsuperscript{3}, Lars Grasedyck\textsuperscript{4}, Rainer Spang\textsuperscript{2}, Tilo Wettig\textsuperscript{1}\\
+			\refsize\hphantom{m}\textsuperscript{1} Department of Physics, University of Regensburg, \textsuperscript{2} Faculty of Informatics and Data Science, University of Regensburg,\\
+			\hphantom{m}\textsuperscript{3} Department of Biosystems and Engineering, ETH Zürich, \textsuperscript{4} Institute for Geometry and Applied Mathematics, RWTH Aachen
+		}
+	};
+	\node[fill=BG!50, rounded corners=0.2cm,anchor=west] at (-0.495*\w,41) (QR) {\qrcode[height=6.5cm]{https://simon-pfahler.github.io/permanent/RECOMB25/RECOMB25.html}};
+	\node[anchor=north, inner sep=0] at (QR.south) {online version};
+	\node[anchor=west] at ($(QR.east)+(1,-0.3)$) (UR) {\includegraphics[height=6.5cm]{graphics/ur-logo-bildmarke-grau.eps}};
+	\node[anchor=west, fill=BG!50, rounded corners=0.5cm] at ($(UR.east)+(1,0)$) {\includegraphics[height=5cm]{graphics/logo_sdv.pdf}};
+	% <<< Titelblock
+
+	% >>> Summary block
+	\begin{scope}[shift={(-40,32)}]
+		\filldraw[blockcolors,line width=0.3cm]
+		(-1,-7) ..controls ++(90:10) and ++(175:12)..
+		(20,2) ..controls ++(175:-16) and ++(15:18)..
+		(12,-28) ..controls ++(15:-14) and ++(90:-10)..
+		cycle;
+		\node[anchor=north west] at (0,1)
+		{
+			\parbox[t]{30cm}{
+				\hspace{3cm}\headingsize\textbf{Summary}
+				\normalsize
+				\begin{itemize}
+					\item In cancer progression, the rate of occurence\\of genetic events depends on the state of a\\tumor
+					\item Mutual Hazard Networks infer promoting and\\inhibiting effects between genetic events\\from patient data
+					\item Splitting the events in a dataset into clusters\\allows us to infer approximate MHNs for\\hundreds of events, overcoming a major\\runtime limitation of MHN
+					\item Investigating the obtained clusters can\\give valuable input into the under-\\lying biology, e.g.\ the role that\\different events play in cancer\\
+					      \hphantom{mn}progression
+				\end{itemize}
+			}
+		};
+	\end{scope}
+	% <<< Summary block
+
+	% >>> MHN graph example
+	\begin{scope}[shift={(0,30)}]
+		\node[circle, draw=violet, fill=violet!20] at (80:4.5) (A) {\headingsize A};
+		\node[circle,draw=yellow, fill=yellow!20] at (210:4.5) (B) {\headingsize B};
+		\node[circle,draw=green, fill=green!20] at (340:4.5) (C) {\headingsize C};
+		\draw[blue, line width=1mm, ->, shorten <=0.2cm, shorten >=0.2cm, line cap=round] (A) to[bend right=25] node[above, sloped, black!50] {\commentsize\texthandwritten{promoting}} (B);
+		\draw[red, line width=1.5mm, -|, shorten <=0.2cm, shorten >=0.2cm, line cap=round] (B) to[bend right=25] node[below, sloped, black!50] {\commentsize\texthandwritten{inhibiting}} (C);
+		\draw[blue, line width=2mm, ->, shorten <=0.2cm, shorten >=0.2cm, line cap=round] (C) to[bend right=25] (A);%node[above, sloped, black!50] {\commentsize\texthandwritten{stochastic}} (A);
+		\draw[black!50, commentarrow, shorten <=0.1cm, shorten >=0.1cm] (-0.3,1.5) arc (110:435:1cm);
+		\node[black!50] at (0,-1) {\commentsize\texthandwritten{circular}};
+	\end{scope}
+	% <<< MHN graph example
+
+	% >>> Markov chain visualization
+	\begin{scope}[line cap=rect,shift={(-6,21)}]
+		% names
+		\node[violet, anchor=south, inner sep=5pt] at (0.5,0) {\refsize A};
+		\node[yellow, anchor=south, inner sep=5pt] at (1.5,0) {\refsize B};
+		\node[green, anchor=south, inner sep=5pt] at (2.5,0) {\refsize C};
+
+		% first line
+		\fill[white] (0,0) rectangle ++(1,-1);
+		\fill[white] (1,0) rectangle ++(1,-1);
+		\fill[white] (2,0) rectangle ++(1,-1);
+		\draw (0,0) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+		% connections
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (1.5,-0.5) -- (-2,-3);
+		\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.85cm,->] (1.5,-0.5) -- (1.5,-3);
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (1.5,-0.5) -- (5,-3);
+
+		% second line
+		\fill[violet] (-3.5,-2.5) rectangle ++(1,-1);
+		\fill[white] (-2.5,-2.5) rectangle ++(1,-1);
+		\fill[white] (-1.5,-2.5) rectangle ++(1,-1);
+		\fill[white] (0,-2.5) rectangle ++(1,-1);
+		\fill[yellow] (1,-2.5) rectangle ++(1,-1);
+		\fill[white] (2,-2.5) rectangle ++(1,-1);
+		\fill[white] (3.5,-2.5) rectangle ++(1,-1);
+		\fill[white] (4.5,-2.5) rectangle ++(1,-1);
+		\fill[green] (5.5,-2.5) rectangle ++(1,-1);
+		\draw (0,-2.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+		\draw (-3.5,-2.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+		\draw (3.5,-2.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+		% connections
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (1.5,-3) -- (-2,-5.5);
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (1.5,-3) -- (5,-5.5);
+		\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.85cm,->] (5,-3) -- (5,-5.5);
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (5,-3) -- (1.5,-5.5);
+		\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.85cm,->] (-2,-3) -- (-2,-5.5);
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (-2,-3) -- (1.5,-5.5);
+
+		% third line
+		\fill[violet] (-3.5,-5) rectangle ++(1,-1);
+		\fill[yellow] (-2.5,-5) rectangle ++(1,-1);
+		\fill[white] (-1.5,-5) rectangle ++(1,-1);
+		\fill[violet] (0,-5) rectangle ++(1,-1);
+		\fill[white] (1,-5) rectangle ++(1,-1);
+		\fill[green] (2,-5) rectangle ++(1,-1);
+		\fill[white] (3.5,-5) rectangle ++(1,-1);
+		\fill[yellow] (4.5,-5) rectangle ++(1,-1);
+		\fill[green] (5.5,-5) rectangle ++(1,-1);
+		\draw (0,-5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+		\draw (-3.5,-5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+		\draw (3.5,-5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+		% connections
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (5,-5.5) -- (1.5,-8);
+		\draw[line cap=round,black!50,shorten >=0.75cm, shorten <=0.85cm,->] (1.5,-5.5) -- (1.5,-8);
+		\draw[line cap=round,black!50,shorten >=1.5cm, shorten <=1.5cm,->] (-2,-5.5) -- (1.5,-8);
+
+		% fourth line
+		\fill[violet] (0,-7.5) rectangle ++(1,-1);
+		\fill[yellow] (1,-7.5) rectangle ++(1,-1);
+		\fill[green] (2,-7.5) rectangle ++(1,-1);
+		\draw (0,-7.5) -- ++(3,0) -- ++(0,-1) -- ++(-3,0) -- ++(0,1) ++(1,0) -- ++(0,-1) -- ++(1,0) -- ++(0,1);
+
+		% annotations
+		\node[black!50] at (-2,-0.8) (absent) {\commentsize\texthandwritten{absent}};
+		\draw[black!50,commentarrow] (-0.6,-0.8) to[bend left=30] (0.5,-0.5);
+		\node[black!50] at (5.2,-0.9) {\commentsize\texthandwritten{present}};
+		\draw[black!50,commentarrow] (5.4,-1.2) to[bend left=30] (6,-3);
+	\end{scope}
+	% <<< Markov chain visualization
+
+	% >>> MHN block
+	\begin{scope}[shift={(8,36)}]
+		\filldraw[blockcolors, line width=0.3cm]
+		(-1,-10) ..controls ++(0,8) and ++(-15,-1)..
+		(13,3) ..controls ++(18,1) and ++(-1,10)..
+		(32,-10) ..controls ++(1.8,-18) and ++(10,1)..
+		(21,-27.5) ..controls ++(-20,-2) and ++(0,-20)..
+		cycle;
+		\node[anchor=north west] at (0,0)
+		{
+			\parbox[t]{30cm}{
+				\hspace{1cm}\headingsize\textbf{Mutual Hazard Networks}\normalsize\raisebox{0.4ex}{~\cite{Schill_2024}}
+				\normalsize
+				\begin{itemize}
+					\item Cancer progresses by accumulating genetic events
+					\item This progression can be modeled as a Markov chain with transition rates
+					      \begin{align*}
+						      \vec Q_{x^{+i},x}=\Theta_{ii}\prod_{x_j=1}^d\Theta_{ij}
+					      \end{align*}
+					\item Patient data of observed tumors define a probability distribution $\vec p_\mathcal D$
+					      \begin{itemize}
+						      \item[\followsarrow] Parameters $\Theta$ can be infered by comparing to the time-marginalized probability distribution
+						            \begin{align*}
+							            \vec p_\Theta=(\vec I-\vec Q)^{-1}\vec p_0
+						            \end{align*}
+						            via the log-likelihood (LL)
+					      \end{itemize}
+					\item Exact calculation of $\vec p_\Theta$ is limited to under 25 active events per patient due to runtime behavior
+				\end{itemize}
+			}
+		};
+		\node[black!50] at (15,-7.7) {\commentsize\parbox[t]{8cm}{
+				\centering
+				\texthandwritten{base rate\\of event i}
+			}
+		};
+		\draw[commentarrow,black!50] (15,-8.6) to[bend right=20] (15.4,-9.5);
+		\node[black!50] at (23,-8) {\commentsize\parbox[t]{8cm}{
+				\centering
+				\texthandwritten{influence of\\event j on event i}
+			}
+		};
+		\draw[commentarrow,black!50] (21.05,-8.85) to[bend left=30] (20.35,-9.5);
+		\node[black!50] at (26.2,-19.65) {\commentsize\parbox[t]{10cm}{
+				\texthandwritten{initial distribution contains only healthy patients}
+			}
+		};
+		\draw[commentarrow,black!50] (21,-19.2) to[bend right=30] (20.3,-19.7);
+		\node[black!50] at (11,-11.5) {\commentsize\texthandwritten{rate to acquire event i}};
+		\draw[commentarrow,black!50] (9.5,-11) to[bend left=40] (10.5,-10);
+	\end{scope}
+	% <<< MHN block
+
+	% >>> Clustering example
+	\begin{scope}[shift={(26,0)},font=\refsize]
+		% Theta matrix
+		\begin{scope}[shift={(-2.5,0)}]
+			\node at (-5,5.5) {\texthandwritten{$\Theta$ matrix}};
+			\node at (-8,4) {A};
+			\node at (-6.5,4) {B};
+			\node at (-5,4) {C};
+			\node at (-3.5,4) {D};
+			\node at (-2,4) {E};
+			\node at (-0.5,4) {F};
+
+			\node at (-9.5,2.5) {A};
+			\node[gray] at (-8,2.5) {2};
+			\node[red] at (-6.5,2.5) {.3};
+			\node[blue] at (-5,2.5) {4};
+			\node[gray] at (-3.5,2.5) {1};
+			\node[gray] at (-2,2.5) {1};
+			\node[blue] at (-0.5,2.5) {1.5};
+
+			\node at (-9.5,1) {B};
+			\node[red] at (-8,1) {.3};
+			\node[gray] at (-6.5,1) {1};
+			\node[red] at (-5,1) {.5};
+			\node[gray] at (-3.5,1) {1};
+			\node[gray] at (-2,1) {1};
+			\node[gray] at (-0.5,1) {1};
+
+			\node at (-9.5,-0.5) {C};
+			\node[blue] at (-8,-0.5) {5};
+			\node[blue] at (-6.5,-0.5) {2};
+			\node[gray] at (-5,-0.5) {1};
+			\node[gray] at (-3.5,-0.5) {1};
+			\node[red] at (-2,-0.5) {.4};
+			\node[gray] at (-0.5,-0.5) {1};
+
+			\node at (-9.5,-2) {D};
+			\node[gray] at (-8,-2) {1};
+			\node[gray] at (-6.5,-2) {1};
+			\node[gray] at (-5,-2) {1};
+			\node[gray] at (-3.5,-2) {1.5};
+			\node[blue] at (-2,-2) {4};
+			\node[red] at (-0.5,-2) {.2};
+
+			\node at (-9.5,-3.5) {E};
+			\node[gray] at (-8,-3.5) {1};
+			\node[gray] at (-6.5,-3.5) {1};
+			\node[red] at (-5,-3.5) {.5};
+			\node[blue] at (-3.5,-3.5) {3};
+			\node[gray] at (-2,-3.5) {2};
+			\node[red] at (-0.5,-3.5) {.1};
+
+			\node at (-9.5,-5) {F};
+			\node[blue] at (-8,-5) {3};
+			\node[gray] at (-6.5,-5) {1};
+			\node[gray] at (-5,-5) {1};
+			\node[blue] at (-3.5,-5) {2};
+			\node[red] at (-2,-5) {.2};
+			\node[gray] at (-0.5,-5) {1};
+		\end{scope}
+
+		\node at (1.25,0) {\scalebox{0.7}{\tikz{\straightarrow(0,0)[cyan!50,rotate=0]}}};
+		\node at (1.25,1.5) {\commentsize$\max(|\log\Theta_{ij}|,|\log\Theta_{ji}|)$};
+
+		%Distance matrix
+		\begin{scope}[shift={(3,1.5)}]
+			\node at (7,5.5) {\texthandwritten{Distance matrix}};
+			\node at (4,4) {A};
+			\node at (5.5,4) {B};
+			\node at (7,4) {C};
+			\node at (8.5,4) {D};
+			\node at (10,4) {E};
+			\node at (11.5,4) {F};
+
+			\node at (2.5,2.5) {A};
+			\node[gray] at (4,2.5) {$\infty$};
+			\node at (5.5,2.5) {.8};
+			\node at (7,2.5) {.6};
+			\node[gray] at (8.5,2.5) {$\infty$};
+			\node[gray] at (10,2.5) {$\infty$};
+			\node at (11.5,2.5) {.9};
+
+			\node at (2.5,1) {B};
+			\node at (4,1) {.8};
+			\node[gray] at (5.5,1) {$\infty$};
+			\node at (7,1) {1.4};
+			\node[gray] at (8.5,1) {$\infty$};
+			\node[gray] at (10,1) {$\infty$};
+			\node[gray] at (11.5,1) {$\infty$};
+
+			\node at (2.5,-0.5) {C};
+			\node at (4,-0.5) {.6};
+			\node at (5.5,-0.5) {1.4};
+			\node[gray] at (7,-0.5) {$\infty$};
+			\node[gray] at (8.5,-0.5) {$\infty$};
+			\node at (10,-0.5) {1.1};
+			\node[gray] at (11.5,-0.5) {$\infty$};
+
+			\node at (2.5,-2) {D};
+			\node[gray] at (4,-2) {$\infty$};
+			\node[gray] at (5.5,-2) {$\infty$};
+			\node[gray] at (7,-2) {$\infty$};
+			\node[gray] at (8.5,-2) {$\infty$};
+			\node at (10,-2) {.7};
+			\node at (11.5,-2) {.6};
+
+			\node at (2.5,-3.5) {E};
+			\node[gray] at (4,-3.5) {$\infty$};
+			\node[gray] at (5.5,-3.5) {$\infty$};
+			\node at (7,-3.5) {1.1};
+			\node at (8.5,-3.5) {.7};
+			\node[gray] at (10,-3.5) {$\infty$};
+			\node at (11.5,-3.5) {.4};
+
+			\node at (2.5,-5) {F};
+			\node at (4,-5) {.9};
+			\node[gray] at (5.5,-5) {$\infty$};
+			\node[gray] at (7,-5) {$\infty$};
+			\node at (8.5,-5) {.6};
+			\node at (10,-5) {.4};
+			\node[gray] at (11.5,-5) {$\infty$};
+		\end{scope}
+
+		\node at (8,-6.5) {\scalebox{0.65}{\tikz{\straightarrow(0,0)[cyan!50,rotate=270]}}};
+
+		%Clustering
+		\node at (8,-9) {\texthandwritten{Clustering algorithm}};
+		\begin{scope}[shift={(4,-14)}]
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (A) to (B);
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (B) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (C) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.61pt] (A) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (B);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (B) to (C);
+			\draw[blue,->, bend right=15, line width=3*0.41pt] (F) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (A) to (F);
+			\draw[red, -|, bend right=15, line width=3*0.92pt] (E) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (E);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (E) to (D);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (D) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (F) to (D);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (D) to (F);
+			\draw[red, -|, bend right=15, line width=3*2.3pt] (F) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (E) to (F);
+		\end{scope}
+		\node at (8,-11) {\scalebox{0.35}{\tikz{\curvedarrow(0,0)[violet!50,rotate=-15]}}};
+		\node[black!50, rotate=5] at (7.5,-10.2) {\commentsize\texthandwritten{1. step}};
+		\begin{scope}[shift={(12,-14.5)}]
+			\filldraw[draw=yellow,fill=yellow!50, line width=0.7mm]
+			(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+			(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+			(0,1.8) ..controls ++(0:-2) and ++(75:1.5)..
+			cycle;
+
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (A) to (B);
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (B) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (C) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.61pt] (A) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (B);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (B) to (C);
+			\draw[blue,->, bend right=15, line width=3*0.41pt] (F) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (A) to (F);
+			\draw[red, -|, bend right=15, line width=3*0.92pt] (E) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (E);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (E) to (D);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (D) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (F) to (D);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (D) to (F);
+			\draw[red, -|, bend right=15, line width=3*2.3pt] (F) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (E) to (F);
+		\end{scope}
+		\node at (14,-18.5) {\scalebox{0.35}{\tikz{\curvedarrow(0,0)[violet!50,rotate=-110]}}};
+		\node[black!50, rotate=-80] at (14.9,-18.5) {\commentsize\texthandwritten{2. step}};
+		\begin{scope}[shift={(12.1,-23.5)}]
+			\filldraw[draw=yellow,fill=yellow!50, line width=0.7mm]
+			(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+			(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+			(0,1.8) ..controls ++(0:-2) and ++(75:1.5)..
+			cycle;
+			\filldraw[draw=cyan,fill=cyan!50, line width=0.7mm]
+			(-3.4,-1) ..controls ++(85:-1.8) and ++(92:-1.5)..
+			(3.2,-1.2) ..controls ++(92:1.5) and ++(0:1.5)..
+			(0,-0.48) ..controls ++(0:-1.5) and ++(85:1.9)..
+			cycle;
+
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (A) to (B);
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (B) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (C) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.61pt] (A) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (B);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (B) to (C);
+			\draw[blue,->, bend right=15, line width=3*0.41pt] (F) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (A) to (F);
+			\draw[red, -|, bend right=15, line width=3*0.92pt] (E) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (E);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (E) to (D);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (D) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (F) to (D);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (D) to (F);
+			\draw[red, -|, bend right=15, line width=3*2.3pt] (F) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (E) to (F);
+		\end{scope}
+		\node at (8.3,-20.2) {\scalebox{0.35}{\tikz{\curvedarrowinv(0,0)[violet!50,rotate=200]}}};
+		\node[black!50, rotate=-8] at (8.8,-19.5) {\commentsize\texthandwritten{3. step}};
+		\begin{scope}[shift={(4.2,-23)}]
+			\filldraw[draw=yellow,fill=yellow!50, line width=0.7mm]
+			(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+			(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+			(0,1.8) ..controls ++(0:-2) and ++(75:1.5)..
+			cycle;
+			\filldraw[draw=cyan,fill=cyan!50, line width=0.7mm]
+			(-3.4,-1) ..controls ++(85:-1.8) and ++(355:-1)..
+			(-0.5,-4.2) ..controls ++(355:1.4) and ++(92:-1.5)..
+			(3.2,-1.2) ..controls ++(92:1.5) and ++(0:1.5)..
+			(0,-0.48) ..controls ++(0:-1.5) and ++(85:1.9)..
+			cycle;
+
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (A) to (B);
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (B) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (C) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.61pt] (A) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (B);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (B) to (C);
+			\draw[blue,->, bend right=15, line width=3*0.41pt] (F) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (A) to (F);
+			\draw[red, -|, bend right=15, line width=3*0.92pt] (E) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (E);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (E) to (D);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (D) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (F) to (D);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (D) to (F);
+			\draw[red, -|, bend right=15, line width=3*2.3pt] (F) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (E) to (F);
+		\end{scope}
+		\node at (3.2,-28.8) {\scalebox{0.35}{\tikz{\curvedarrowinv(0,0)[violet!50,rotate=-50]}}};
+		\node[black!50, rotate=-70] at (2.5,-29) {\commentsize\texthandwritten{4. step}};
+		\begin{scope}[shift={(8,-31)}]
+			\filldraw[draw=yellow,fill=yellow!50, line width=0.7mm]
+			(-3.6,1.7) ..controls ++(75:-2.5) and ++(100:-2)..
+			(3.4,1.2) ..controls ++(100:1.5) and ++(0:2)..
+			(0,4.3) ..controls ++(0:-2) and ++(75:1.5)..
+			cycle;
+			\filldraw[draw=cyan,fill=cyan!50, line width=0.7mm]
+			(-3.4,-1) ..controls ++(85:-1.8) and ++(355:-1)..
+			(-0.5,-4.2) ..controls ++(355:1.4) and ++(92:-1.5)..
+			(3.2,-1.2) ..controls ++(92:1.5) and ++(0:1.5)..
+			(0,-0.48) ..controls ++(0:-1.5) and ++(85:1.9)..
+			cycle;
+
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2.3,1.1) (A) {\refsize A};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (0,3.3) (B) {\refsize B};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.5,1.3) (C) {\refsize C};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-0.5,-3.2) (D) {\refsize D};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (-2.2,-1) (E) {\refsize E};
+			\node[circle, draw=green, fill=green!20, inner sep=.4ex] at (2,-1.2) (F) {\refsize F};
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (A) to (B);
+			\draw[red, -|, bend right=15, line width=3*1.2pt] (B) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (C) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.61pt] (A) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (B);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (B) to (C);
+			\draw[blue,->, bend right=15, line width=3*0.41pt] (F) to (A);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (A) to (F);
+			\draw[red, -|, bend right=15, line width=3*0.92pt] (E) to (C);
+			\draw[red, -|, bend right=15, line width=3*0.69pt] (C) to (E);
+			\draw[blue,->, bend right=15, line width=3*1.39pt] (E) to (D);
+			\draw[blue,->, bend right=15, line width=3*1.1pt] (D) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (F) to (D);
+			\draw[blue,->, bend right=15, line width=3*0.69pt] (D) to (F);
+			\draw[red, -|, bend right=15, line width=3*2.3pt] (F) to (E);
+			\draw[red, -|, bend right=15, line width=3*1.61pt] (E) to (F);
+		\end{scope}
+		\node[black!50, rotate=20] at (11.5,-34.5) {\commentsize\texthandwritten{\parbox[t]{5cm}{\centering obtained clustering}}};
+	\end{scope}
+	% <<< Clustering example
+
+	% >>> Clustering block
+	\begin{scope}[shift={(-16,9)}]
+		\filldraw[blockcolors, line width=0.3cm]
+		(6,2) ..controls ++(5:5) and ++(110:10)..
+		(28,-6) ..controls ++(110:-10) and ++(0:10)..
+		(14,-18) ..controls ++(0:-15) and ++(85:-10)..
+		(-2,-7) ..controls ++(85:8) and ++(5:-4)..
+		cycle;
+		\node[anchor=north west] at (0,0)
+		{
+			\parbox[t]{0.3\wl}{
+				\hspace{1cm}\headingsize\textbf{Clustering}
+				\normalsize
+				\begin{itemize}
+                    \item Cancer progression is widely assumed to be weakly modular~\cite{Iranzo_2022}
+					      \begin{itemize}
+						      \item[\followsarrow] Perform calculations on smaller clusters and combine results in the end
+					      \end{itemize}
+					\item To estimate $\Theta_{ij}$, we need a cluster with $<\!25$ events, containing both $i$ and $j$
+					\item We use hierarchical clustering~\cite{Rokach_2005} to obtain possibly overlapping clusters
+				\end{itemize}
+			}
+		};
+	\end{scope}
+	% <<< Clustering block
+
+	% >>> Validation block
+	\begin{scope}[shift={(-28,-31)}]
+
+		\fill[gray!50, draw=gray!50!black, line width=0.3cm, rounded corners=2.3cm] (-1.5,0.3) rectangle ++(35,-20);
+
+		\node[anchor=north west] at (16,-8.7) {\includegraphics{graphics/theta_validation/theta_validation.pdf}};
+		\node[anchor=north west] at (-0.5,-8.7) {\includegraphics{graphics/gradient_validation/gradient_validation.pdf}};
+
+		\node[anchor=north west] at (0,0)
+		{
+			\parbox[t]{32cm}{
+				\smallheadingsize\textbtt{Validation}\\
+				\texttt{\refsize
+					To validate our method using artificial datasets and MHNs with 80 events, we check:
+					\begin{enumerate}
+						\item Gradient approximation accuracy
+						\item Accuracy of learned MHNs
+					\end{enumerate}}
+			}
+		};
+	\end{scope}
+	% <<< Validation block
+
+	% >>> biological example
+	\begin{scope}[shift={(5,-10)},font=\commentsize]
+		\node[anchor=north] at (0,0)
+		{
+			\parbox[t]{35cm}{\centering
+				\smallheadingsize\texthandwritten{biological results}\\
+				\refsize
+				MSK-CHORD~\cite{Jee_2024} data of 5907 LUADs, trained on 125 genetic events\\
+				strongest 30 connections shown
+			}
+		};
+		\begin{scope}[shift={(4,-17)},line cap=round,
+				event/.style={fill=green!20, draw=green, rectangle, inner sep=0.4em, rectangle, line width=1mm, rounded corners=2mm},
+				promoting/.style={blue,->, text=blue!50!black, rounded corners=1mm},
+				inhibiting/.style={red,-|,text=red!50!black, rounded corners=1mm},
+				effect/.style={inner sep=0.2ex}
+			]
+			\def\s{1.5}
+
+			\node[event] at (0,0) (EGFR) {EGFR};
+			\node[event] at (-4.7,3) (MYC/8q) {\parbox[t]{2.65cm}{\centering MYC/8q\\Amp}};
+			\node[event] at (0,2.7) (TP53/17p) {\parbox[t]{2.83cm}{\centering TP53/17p\\Del}};
+			\node[event] at (0,5.5) (EPHA7/6q) {\parbox[t]{3.35cm}{\centering EPHA7/6q\\Del}};
+			\node[event] at (0,-3) (NKX2-1/14q) {\parbox[t]{3.7cm}{\centering NKX2-1/14q\\Amp}};
+			\node[event] at (-6,-0.25) (GNAS/20q) {\parbox[t]{3.55cm}{\centering GNAS/20q\\Amp}};
+			\node[event] at (-11,-0.25) (CCND1/11q) {\parbox[t]{3.5cm}{\centering CCND1/11q\\Amp}};
+			\node[event] at (0, 9) (CDKN2A/9p) {\parbox[t]{4.05cm}{\centering CDKN2A/9p\\Del}};
+			\node[event] at (-6, 9) (BCL2/18q) {\parbox[t]{3.7cm}{\centering BCL2/18q\\Del}};
+			\node[event] at (6,9) (B2M/15q) {\parbox[t]{2.8cm}{\centering B2M/15q\\Del}};
+			\node[event] at (6,5.5) (TERT/5p) {\parbox[t]{2.8cm}{\centering TERT/5p\\Amp}};
+			\node[event] at (-11.5,3) (RMI2/16p) {\parbox[t]{3cm}{\centering RMI2/16p\\Amp}};
+			\node[event] at (-13,9.3) (ARID5B/10q) {\parbox[t]{3.85cm}{\centering ARID5B/10q\\Del}};
+			\node[event] at (-13,6.3) (CXCR4/2q) {\parbox[t]{3.35cm}{\centering CXCR4/2q\\Del}};
+			\node[event] at (8,2.5) (KRAS) {KRAS};
+			\node[event] at (8,0) (EGFR/17p) {\parbox[t]{3.15cm}{\centering EGFR/17p\\Amp}};
+			\node[event] at (4.5,-3) (KEAP1) {KEAP1};
+			\node[event] at (9,-3) (STK11/19p) {\parbox[t]{3.06cm}{\centering STK11/19p\\Del}};
+			\node[event] at (13.5,-3) (STK11) {STK11};
+
+			\draw[inhibiting, line width=2.62785962052687*\s] ($(EGFR.south)+(0,-0.1)$) -- ($(NKX2-1/14q.north)+(0,0.1)$);
+			\draw[inhibiting, line width=2.090191137159693*\s] ($(TP53/17p.west)+(-0.1,0.15)$) -- ($(MYC/8q.east)+(0.1,-0.15)$);
+			\draw[promoting, line width=2.6329435007018858*\s] ($(EGFR.west)+(-0.1,0.4)$) -| ($(MYC/8q.south east)+(-0.2,-0.1)$);
+			\draw[promoting, line width=2.5837968354725245*\s] ($(MYC/8q.south)+(-0.7,-0.1)$) -- ($(GNAS/20q.north)+(0.6,0.1)$);
+			\draw[inhibiting, line width=2.7770633563697484*\s] ($(EGFR.west)+(-0.1,0)$) -- ($(GNAS/20q.east)+(0.1,0.25)$);
+			\draw[inhibiting, line width=3.4485835476815803*\s] ($(EPHA7/6q.north)+(-0.2,0.1)$) -- ($(CDKN2A/9p.south)+(-0.2,-0.1)$);
+			\draw[promoting, line width=2.346640143756334*\s] ($(CDKN2A/9p.south)+(0.2,-0.1)$) -- ($(EPHA7/6q.north)+(0.2,0.1)$);
+			\draw[inhibiting, line width=2.8634787659839303*\s] ($(EPHA7/6q.west)+(-0.1,0)$) -| ($(MYC/8q.north east)+(-0.2,0.1)$);
+			\draw[promoting, line width=2.436940964753187*\s] ($(CDKN2A/9p.west)+(-0.1,0.2)$) -- ($(BCL2/18q.east)+(0.1,0.2)$);
+			\draw[inhibiting, line width=2.384520201540039*\s] ($(BCL2/18q.east)+(0.1,-0.2)$) -- ($(CDKN2A/9p.west)+(-0.1,-0.2)$);
+			\draw[promoting, line width=2.227204778748276*\s] ($(CDKN2A/9p.east)+(0.1,-0.2)$) -- ($(B2M/15q.west)+(-0.1,-0.2)$);
+			\draw[inhibiting, line width=2.1935608542062455*\s] ($(B2M/15q.west)+(-0.1,0.2)$) -- ($(CDKN2A/9p.east)+(0.1,0.2)$);
+			\draw[inhibiting, line width=2.83413942169526*\s] ($(BCL2/18q.south)+(0.7,-0.1)$) -- ($(MYC/8q.north)+(-0.6,0.1)$);
+			\draw[inhibiting, line width=2.140461516655592*\s] ($(B2M/15q.south)+(0,-0.1)$) -- ($(TERT/5p.north)+(0,0.1)$);
+			\draw[inhibiting, line width=2.545765941307774*\s] ($(BCL2/18q.south east)+(-0.2,-0.1)$) |- (-0.4,7.25) (0.4,7.25) -| ($(TERT/5p.north west)+(0.2,0.1)$);
+			\draw[promoting, line width=2.177737488174746*\s] ($(EGFR.north east)+(-0.2,0.1)$) -- ++(0,0.3) -| ($(TERT/5p.south west)+(0.6,-0.1)$);
+			\draw[inhibiting, line width=2.818964791738894*\s] ($(TP53/17p.east)+(0.1,0)$) -| ($(TERT/5p.south west)+(0.2,-0.1)$);
+			\draw[inhibiting, line width=2.394091944573555*\s] ($(EPHA7/6q.east)+(0.1,0)$) -- ($(TERT/5p.west)+(-0.1,0)$);
+			\draw[promoting, line width=2.3620930223508565*\s] ($(TERT/5p.south west)+(0.95,-0.1)$) -- ++(0,-3.35) ++(0,-1) |- (3,-1.2) -| ($(NKX2-1/14q.north east)+(-0.2,0.1)$);
+			\draw[promoting, line width=2.3735738537723017*\s] ($(ARID5B/10q.south)+(0,-0.1)$) -- ($(CXCR4/2q.north)+(0,0.1)$);
+			\draw[promoting, line width=2.1938684346702697*\s] ($(MYC/8q.west)+(-0.1,0)$) -- ($(RMI2/16p.east)+(0.1,0)$);
+			\draw[promoting, line width=2.4937024529361387*\s] ($(MYC/8q.south west)+(-0.1,0.2)$) -| ($(CCND1/11q.north east)+(-0.2,0.1)$);
+			\draw[inhibiting, line width=2.1889670936302164*\s] ($(EGFR.west)+(-0.1,-0.4)$) -| ($(GNAS/20q.south east)+(0.5,-0.8)$) -| ($(CCND1/11q.south east)+(-0.2,-0.1)$);
+			\draw[promoting, line width=2.316964127961973*\s] ($(EGFR.east)+(0.1,0)$) -- ($(EGFR/17p.west)+(-0.1,0)$);
+			\draw[inhibiting, line width=3.038326507008012*\s] ($(KRAS.west)+(-0.1,0.2)$) -| ($(EGFR/17p.north west)+(-0.6,0)$) |- ($(EGFR.north east)+(0.1,-0.2)$);
+			\draw[inhibiting, line width=2.0847404963047738*\s] ($(EGFR.north east)+(0.1,-0.5)$) -| ($(EGFR/17p.north west)+(-0.3,0)$) |- ($(KRAS.west)+(-0.1,-0.2)$);
+			\draw[inhibiting, line width=2.092679620228705*\s] ($(EGFR.south east)+(0.1,0.2)$) -| (4.5,-1) ++ (0,-0.4) -- ($(KEAP1.north)+(0,0.1)$);
+			\draw[promoting, line width=2.5137728556255863*\s] ($(STK11/19p.west)+(-0.1,0)$) -- ($(KEAP1.east)+(0.1,0)$);
+			\draw[promoting, line width=2.276630886867481*\s] ($(STK11/19p.east)+(0.1,0)$) -- ($(STK11.west)+(-0.1,0)$);
+			\draw[promoting, line width=2.4411675614605217*\s] ($(MYC/8q.south east)+(0.1,0.2)$) -| ($(NKX2-1/14q.north west)+(0.2,2.4)$) ++(0,-1.4) -- ($(NKX2-1/14q.north west)+(0.2,0.1)$);
+			\draw[inhibiting, line width=2.7100698079181345*\s] ($(TP53/17p.north east)+(0.1,-0.2)$) -| ($(CDKN2A/9p.south east)+(-0.2,-2.6)$) ++(0,0.6) -- ++(0,1.2) ++(0,0.5) -- ($(CDKN2A/9p.south east)+(-0.2,-0.1)$);
+
+			\node[black!50, rotate=-30] at (10.5,10.5) {\commentsize\texthandwritten{\parbox[t]{8cm}{\centering arrow width denotes\\effect strength}}};
+		\end{scope}
+	\end{scope}
+	% <<< Weakly modular example
+
+	% >>> Optimization process
+	\begin{scope}[shift={(-40,-7)}]
+		\filldraw[blockcolors, line width=0.3cm]
+		(-1,-8) ..controls ++(85:10) and ++(0:-5)..
+		(7,2) ..controls ++(0:10) and ++(100:15)..
+		(29.5,-13) ..controls ++(100:-10) and ++(5:5)..
+		(11,-22.5) ..controls ++(5:-14.5) and (85:-16)..
+		cycle;
+		\node[anchor=north west] at (0,0)
+		{
+			\parbox[t]{28cm}{
+				\hspace{1cm}\headingsize\textbf{Learning Process}
+				\normalsize
+				\begin{itemize}
+					\item To infer MHNs from patient data, we can\\utilize the structure found by our clustering:
+					      \begin{enumerate}
+						      \item Start at independence model, i.e.\ $\Theta_{i\ne j}=1$
+						      \item For every parameter $\Theta_{ij}$: Get gradients of\\the LL score by considering a cluster\\containing events $i$ and $j$
+						      \item Get new parameters $\Theta$ through one optimizer step
+					      \end{enumerate}
+					\item The clusters used to calculate gradients adapt throughout the optimization process to\\fit the data
+				\end{itemize}
+			}
+		};
+	\end{scope}
+	% <<< Optimization process
+
+	% >>> Future Work
+	\begin{scope}[shift={(10,-35)}]
+		\filldraw[blockcolors, line width=0.3cm]
+		(-1,-8) ..controls ++(92:10) and ++(-5:-8)..
+		(8,1) ..controls ++(-5:15) and ++(105:8)..
+		(30.5,-10) ..controls ++(105:-13) and ++(5:10)..
+		(12,-23) ..controls ++(5:-12) and ++(92:-12)..
+		cycle;
+		\node[anchor=north west] at (0,0)
+		{
+			\parbox[t]{30cm}{
+				\hspace{1cm}\headingsize\textbf{Next steps}
+				\normalsize
+				\begin{itemize}
+					\item Investigate choice of distance measure\\analytically and define it to minimize\\$\frac{\|g_{\text{exact}}-g_{\text{approx}}\|}{\|g_{\text{exact}}\|}$
+					\item Obtain an approximation of the score along\\with the gradient approximation
+					\item Consider different clustering strategies
+					      \begin{itemize}
+						      \item[\followsarrow] Spectral clustering is of particular interest, as first tests showed promising results on graphs obtained from MHNs
+					      \end{itemize}
+					\item Investigate biological interpretability of clusters\\\hphantom{n}further
+				\end{itemize}
+			}
+		};
+	\end{scope}
+	% <<< Future Work
+
+	% >>> References
+	\begin{scope}[shift={(-41,-49)}]
+		\node[anchor=north west] at (0,0)
+		{
+			\parbox[t]{50cm}{
+				\AtNextBibliography{\reffsize}
+				\printbibliography[title=\normalsize References\vspace{-0.5cm}]
+			}
+		};
+	\end{scope}
+	% <<< References
+\end{tikzpicture}
+\end{document}
